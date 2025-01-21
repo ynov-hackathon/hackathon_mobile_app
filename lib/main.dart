@@ -4,7 +4,8 @@ import 'package:hackathon_mobile_app/app_routes.dart';
 import 'package:hackathon_mobile_app/constants/routes.dart';
 import 'package:hackathon_mobile_app/constants/strings.dart';
 
-Future<void> main() async {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await setupLocator();
   runApp(const MyApp());
 }
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: AppStrings.appName,
-      initialRoute: RoutePaths.startup,
+      initialRoute: RoutePaths.login,
       onGenerateRoute: (settings) => AppRouter.generateRoute(settings),
     );
   }
