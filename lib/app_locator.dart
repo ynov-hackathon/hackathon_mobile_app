@@ -1,5 +1,5 @@
 import 'package:get_it/get_it.dart';
-import 'package:hackathon_mobile_app/viewmodels/home_view.dart';
+import 'package:hackathon_mobile_app/viewmodels/home_viewmodel.dart';
 import 'package:hackathon_mobile_app/viewmodels/login_viewmodel.dart';
 import 'package:logger/logger.dart';
 
