@@ -13,8 +13,6 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const LoginView());
       case RoutePaths.home:
         return MaterialPageRoute(builder: (_) => const HomeView());
-      case RoutePaths.productDetail:
-        return MaterialPageRoute(builder: (_) => const ProductDetailsView());
       default:
         return MaterialPageRoute(builder: (_) => const Placeholder());
     }

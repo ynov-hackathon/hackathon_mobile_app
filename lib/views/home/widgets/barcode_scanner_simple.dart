@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hackathon_mobile_app/app_locator.dart';
+import 'package:hackathon_mobile_app/services/product_service.dart';
+import 'package:hackathon_mobile_app/viewmodels/product_details_viewmodel.dart';
+import 'package:hackathon_mobile_app/views/base.view.dart';
+import 'package:hackathon_mobile_app/views/product_details/product_details_view.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:openfoodfacts/openfoodfacts.dart';
 
 class BarcodeScannerSimple extends StatefulWidget {
   const BarcodeScannerSimple({super.key});
@@ -14,7 +20,7 @@ class _BarcodeScannerSimpleState extends State<BarcodeScannerSimple> {
   Widget _buildBarcode(Barcode? value) {
     if (value == null) {
       return const Text(
-        'Scan something!',
+        'Scannez un produit!',
         overflow: TextOverflow.fade,
         style: TextStyle(color: Colors.white),
       );
@@ -27,18 +33,28 @@ class _BarcodeScannerSimpleState extends State<BarcodeScannerSimple> {
     );
   }
 
-  void _handleBarcode(BarcodeCapture barcodes) {
+  void _handleBarcode(BarcodeCapture barcodes) async {
     if (mounted) {
       setState(() {
         _barcode = barcodes.barcodes.firstOrNull;
       });
+      Product product = await locator<ProductService>().getProductInfos(barcode: _barcode!.rawValue!);
+
+      if (mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder:(_) => ProductDetailsView(
+            brand: product.brands,
+            productName: product.productName,
+            imageUrl: product.imageFrontUrl,
+          ))
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Simple scanner')),
       backgroundColor: Colors.black,
       body: Stack(
         children: [

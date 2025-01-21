@@ -14,7 +14,7 @@ class QrCodeScanner extends StatelessWidget {
         final List<Barcode> barcodes = capture.barcodes;
 
         for (final barcode in barcodes) {
-          print(barcode.rawValue);
+         
         }
       },
     );

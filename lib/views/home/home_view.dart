@@ -33,7 +33,7 @@ class _HomeViewState extends State<HomeView> {
                     IconButton(
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => BarcodeScannerSimple(),
+                          builder: (context) => const BarcodeScannerSimple(),
                         ),
                       ),
                       icon: const Icon(Icons.qr_code_scanner_sharp)

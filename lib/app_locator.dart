@@ -1,17 +1,20 @@
 import 'package:get_it/get_it.dart';
+import 'package:hackathon_mobile_app/services/product_service.dart';
 import 'package:hackathon_mobile_app/viewmodels/home_viewmodel.dart';
 import 'package:hackathon_mobile_app/viewmodels/login_viewmodel.dart';
+import 'package:hackathon_mobile_app/viewmodels/product_details_viewmodel.dart';
 import 'package:logger/logger.dart';
 
 GetIt locator = GetIt.instance;
 
 void registerServices() {
-  throw UnimplementedError();
+  locator.registerSingleton<ProductService>(ProductService());
 }
 
 void registerViewModels() {
   locator.registerFactory<LoginViewModel>(() => LoginViewModel());
   locator.registerFactory<HomeViewModel>(() => HomeViewModel());
+  locator.registerFactory<ProductDetailsViewModel>(() => ProductDetailsViewModel());
 }
 
 void registerProviders() {
@@ -31,7 +34,7 @@ Future<void> setupLocator() async {
     ),
   );
 
-  // registerServices();
+  registerServices();
   registerViewModels();
   // registerProviders();
   await locator.allReady();
