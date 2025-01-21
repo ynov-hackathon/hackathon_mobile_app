@@ -1,3 +1,9 @@
+<img 
+  src="https://github.com/user-attachments/assets/3db3af27-8bbb-4386-8cf3-2f4ef13acc22" 
+  alt="Custom Image" 
+  style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #e0e0e0;"
+/>
+
 # Recycly ♻️  
 **Empowering Waste Sorting Through Gamification & Innovation**
 
