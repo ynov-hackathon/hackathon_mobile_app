@@ -77,7 +77,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
               icon: const Icon(Icons.arrow_back),
               onPressed: () => Navigator.pop(context),
             ),
-            title: const Text('Product Details'),
+            title: const Text('Détails du produit'),
           ),
           body: SingleChildScrollView(
             child: Column(
@@ -105,14 +105,14 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        widget.product!.productName ?? 'Unknown Product',
+                        widget.product!.productName ?? 'Produit inconnu',
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        widget.product!.brands ?? 'Unknown Brand',
+                        widget.product!.brands ?? 'Marque inconnue',
                         style: TextStyle(
                           fontSize: 18,
                           color: Colors.grey[600],
@@ -122,27 +122,54 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                   ),
                 ),
 
+                // Recycling Information
+                _buildInfoSection(
+                  'Recyclage',
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: _getBinColor().withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete, color: _getBinColor()),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Poubelle ${_getBinColor() == Colors.blue ? 'Bleue' 
+                            : _getBinColor() == Colors.green ? 'Verte' 
+                            : 'Jaune'}',
+                          style: TextStyle(
+                            color: _getBinColor(),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
                 // Quantity
                 _buildInfoSection(
-                  'Quantity',
+                  'Quantité',
                   Text(product?.quantity ?? 'N/A'),
                 ),
 
                 // Nutritional Information
                 _buildInfoSection(
-                  'Nutritional Values (per 100g)',
+                  'Valeurs nutritionnelles (pour 100g)',
                   Column(
                     children: [
                       _buildNutritionRow(
-                        'Salt',
+                        'Sel',
                         product?.nutriments?.getValue(Nutrient.salt, PerSize.oneHundredGrams),
                       ),
                       _buildNutritionRow(
-                        'Sugars',
+                        'Sucre',
                         product?.nutriments?.getValue(Nutrient.sugars, PerSize.oneHundredGrams),
                       ),
                       _buildNutritionRow(
-                        'Fat',
+                        'Matières grasses',
                         product?.nutriments?.getValue(Nutrient.fat, PerSize.oneHundredGrams),
                       ),
                     ],
@@ -151,7 +178,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
                 // Additives
                 _buildInfoSection(
-                  'Additives',
+                  'Additifs',
                   Wrap(
                     spacing: 8,
                     children: (product?.additives?.names ?? [])
@@ -165,7 +192,7 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
 
                 // Allergens
                 _buildInfoSection(
-                  'Allergens',
+                  'Allergènes',
                   Wrap(
                     spacing: 8,
                     children: (product?.allergens?.names ?? [])
@@ -174,33 +201,6 @@ class _ProductDetailsViewState extends State<ProductDetailsView> {
                               backgroundColor: Colors.red[100],
                             ))
                         .toList(),
-                  ),
-                ),
-
-                // Recycling Information
-                _buildInfoSection(
-                  'Recycling',
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: _getBinColor().withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(Icons.delete, color: _getBinColor()),
-                        const SizedBox(width: 8),
-                        Text(
-                          'Dispose in ${_getBinColor() == Colors.blue ? 'Blue' 
-                            : _getBinColor() == Colors.green ? 'Green' 
-                            : 'Yellow'} Bin',
-                          style: TextStyle(
-                            color: _getBinColor(),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
                   ),
                 ),
               ],
