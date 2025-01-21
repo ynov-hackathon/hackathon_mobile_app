@@ -7,7 +7,9 @@ import 'package:openfoodfacts/openfoodfacts.dart';
 /// This class interacts with the OpenFoodFacts API to retrieve product details
 /// based on a provided barcode.
 class ProductService extends BaseService {
-  ProductService();
+  ProductService() {
+    OpenFoodAPIConfiguration.userAgent = UserAgent(name: 'Recycly');
+  }
 
   /// Fetches product information using a barcode.
   /// 

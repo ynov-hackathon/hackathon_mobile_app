@@ -1,19 +1,17 @@
 
 import 'package:flutter/material.dart';
+import 'package:hackathon_mobile_app/theme/colors.dart';
 import 'package:hackathon_mobile_app/viewmodels/login_viewmodel.dart';
 import 'package:hackathon_mobile_app/viewmodels/product_details_viewmodel.dart';
 import 'package:hackathon_mobile_app/views/base.view.dart';
+import 'package:openfoodfacts/openfoodfacts.dart';
 
 class ProductDetailsView extends StatefulWidget {
-  final String? brand;
-  final String? productName;
-  final String? imageUrl;
+  final Product? product;
 
   const ProductDetailsView({
     super.key,
-    required this.brand,
-    required this.productName,
-    required this.imageUrl
+    required this.product
   });
 
   @override
@@ -21,15 +19,192 @@ class ProductDetailsView extends StatefulWidget {
 }
 
 class _ProductDetailsViewState extends State<ProductDetailsView> {
+  Color _getBinColor() {
+
+    final weight = widget.product!.quantity!.split(' ').firstOrNull;
+    if (weight != null && double.tryParse(weight)! > 500) {
+      return AppColors.yellowBin;
+    }
+    return AppColors.blueBin;
+  }
+
+  Widget _buildInfoSection(String title, Widget content) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.green,
+              ),
+            ),
+            const SizedBox(height: 8),
+            content,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildNutritionRow(String label, double? value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label),
+          Text(value != null ? '${value.toStringAsFixed(2)}g' : 'N/A'),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final product = widget.product;
+    
     return BaseView<ProductDetailsViewModel>(
       builder: (context, model, _) {
         return Scaffold(
-          body: Column(
-            children: [
-              Text("${widget.brand}, ${widget.productName}, ${widget.imageUrl}")
-            ],
+          appBar: AppBar(
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => Navigator.pop(context),
+            ),
+            title: const Text('Product Details'),
+          ),
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Product Image
+                AspectRatio(
+                  aspectRatio: 16/9,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: widget.product!.imageFrontUrl != null 
+                          ? DecorationImage(
+                              image: NetworkImage(widget.product!.imageFrontUrl!),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                    ),
+                  ),
+                ),
+
+                // Product Name and Brand
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.product!.productName ?? 'Unknown Product',
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        widget.product!.brands ?? 'Unknown Brand',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey[600],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Quantity
+                _buildInfoSection(
+                  'Quantity',
+                  Text(product?.quantity ?? 'N/A'),
+                ),
+
+                // Nutritional Information
+                _buildInfoSection(
+                  'Nutritional Values (per 100g)',
+                  Column(
+                    children: [
+                      _buildNutritionRow(
+                        'Salt',
+                        product?.nutriments?.getValue(Nutrient.salt, PerSize.oneHundredGrams),
+                      ),
+                      _buildNutritionRow(
+                        'Sugars',
+                        product?.nutriments?.getValue(Nutrient.sugars, PerSize.oneHundredGrams),
+                      ),
+                      _buildNutritionRow(
+                        'Fat',
+                        product?.nutriments?.getValue(Nutrient.fat, PerSize.oneHundredGrams),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Additives
+                _buildInfoSection(
+                  'Additives',
+                  Wrap(
+                    spacing: 8,
+                    children: (product?.additives?.names ?? [])
+                        .map((additive) => Chip(
+                              label: Text(additive),
+                              backgroundColor: Colors.orange[100],
+                            ))
+                        .toList(),
+                  ),
+                ),
+
+                // Allergens
+                _buildInfoSection(
+                  'Allergens',
+                  Wrap(
+                    spacing: 8,
+                    children: (product?.allergens?.names ?? [])
+                        .map((allergen) => Chip(
+                              label: Text(allergen),
+                              backgroundColor: Colors.red[100],
+                            ))
+                        .toList(),
+                  ),
+                ),
+
+                // Recycling Information
+                _buildInfoSection(
+                  'Recycling',
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: _getBinColor().withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.delete, color: _getBinColor()),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Dispose in ${_getBinColor() == Colors.blue ? 'Blue' 
+                            : _getBinColor() == Colors.green ? 'Green' 
+                            : 'Yellow'} Bin',
+                          style: TextStyle(
+                            color: _getBinColor(),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       }

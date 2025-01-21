@@ -15,6 +15,8 @@ class BarcodeScannerSimple extends StatefulWidget {
 }
 
 class _BarcodeScannerSimpleState extends State<BarcodeScannerSimple> {
+  bool _isScanned = false; // Simple flag to prevent duplicate scans
+  MobileScannerController controller = MobileScannerController();
   Barcode? _barcode;
 
   Widget _buildBarcode(Barcode? value) {
@@ -34,19 +36,35 @@ class _BarcodeScannerSimpleState extends State<BarcodeScannerSimple> {
   }
 
   void _handleBarcode(BarcodeCapture barcodes) async {
-    if (mounted) {
-      setState(() {
-        _barcode = barcodes.barcodes.firstOrNull;
-      });
-      Product product = await locator<ProductService>().getProductInfos(barcode: _barcode!.rawValue!);
+    if (_isScanned) return;
+    
+    final barcode = barcodes.barcodes.firstOrNull;
+    if (barcode?.rawValue == null || !mounted) return;
+
+    setState(() => _isScanned = true);
+    
+    try {
+      final product = await locator<ProductService>().getProductInfos(
+        barcode: barcode!.rawValue!,
+      );
 
       if (mounted) {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder:(_) => ProductDetailsView(
-            brand: product.brands,
-            productName: product.productName,
-            imageUrl: product.imageFrontUrl,
-          ))
+        // Stop scanner and replace current route
+        await controller.stop();
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ProductDetailsView(
+              product: product,
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() => _isScanned = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: ${e.toString()}')),
         );
       }
     }
@@ -59,6 +77,7 @@ class _BarcodeScannerSimpleState extends State<BarcodeScannerSimple> {
       body: Stack(
         children: [
           MobileScanner(
+            controller: controller,
             onDetect: _handleBarcode,
           ),
           Align(
