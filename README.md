@@ -1,8 +1,15 @@
-<img 
-  src="https://github.com/user-attachments/assets/3db3af27-8bbb-4386-8cf3-2f4ef13acc22" 
-  alt="Custom Image" 
-  style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #e0e0e0;"
-/>
+<p align='center'>
+  <img 
+    src="https://github.com/user-attachments/assets/cd50dbfb-d364-4c01-a641-44a2c3ac5d72" 
+    alt="Custom Image" 
+    style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #e0e0e0;"
+  />
+  <img 
+    src="https://github.com/user-attachments/assets/4d0d02b0-4276-4744-bb0b-64d89a49c9bc" 
+    alt="Custom Image" 
+    style="width: 150px; height: auto; border-radius: 8px; border: 2px solid #e0e0e0;"
+  />
+</p>
 
 # Recycly ♻️  
 **Empowering Waste Sorting Through Gamification & Innovation**
